@@ -93,7 +93,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/awscli
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run:
@@ -101,9 +101,9 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              #--tags project=udapeople \
-              # --stack-name backend-${CIRCLE_WORKFLOW_ID:0:5} \
-              # --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:5}
+              --tags project=udapeople \
+              --stack-name backend-${CIRCLE_WORKFLOW_ID:0:5} \
+              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:5}
               exit 1
       - run:
           name: Frontend infrastructure

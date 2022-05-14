@@ -1,0 +1,18 @@
+---
+
+- name: Extract artifact into EC2
+  become: yes
+  unarchive:
+    src: ~/project/artifact.tar.gz
+    dest: /home/ubuntu
+
+- name: Installing dependencies
+  become: yes
+  npm:
+    path: /home/ubuntu
+
+- name: Start pm2
+  become: yes
+  shell: pm2 start npm -- start
+  args:
+    chdir: /home/ubuntu

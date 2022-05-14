@@ -324,6 +324,11 @@ jobs:
           command: |
             apk update
             apk add aws-cli curl
+
+      - run:
+          name: Sleeping for 30 seconds. Waiting for backend to come online
+          command: sleep 30
+      
       - run:
           name: Backend smoke test
           command: |

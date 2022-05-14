@@ -26,16 +26,13 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = curl --insecure https://kvdb.io/6STZ5FHiFLWSx4qSBscg6N/migration_<<parameters.workflow_id>>
+            SUCCESS = $(curl --insecure https://kvdb.io/6STZ5FHiFLWSx4qSBscg6N/migration_<<parameters.workflow_id>>)
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
-              npm install
-              npm run migrations:revert
+              npm install && npm run migrations:revert
               exit 1
             fi
-
-
 
 jobs:
   build-frontend:
@@ -197,11 +194,19 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y awscli
+            cd backend && npm install
       - run:
           name: Run migrations
           command: |
             cd backend
-            npm install
+            # Run and save the migrations output
             npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to memstash
@@ -222,6 +227,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-build]
       - attach_workspace:
           at: ~/
       - run:
@@ -262,6 +269,8 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints: ["ca:ed:fe:e1:9d:6e:36:df:2b:0c:8f:59:05:f9:cc:17"]
+      - restore_cache:
+          keys: [backend-build]
       - attach_workspace:
           at: ~/
       - run:

@@ -277,7 +277,7 @@ jobs:
             apt-get update
             apt-get install -y tar gzip curl awscli ansible
             curl -sL https://deb.nodesource.com/setup_13.x | bash -
-            sudo apt-get install -y nodejs
+            apt-get install -y nodejs
       - run:
           name: Deploy backend
           command: |

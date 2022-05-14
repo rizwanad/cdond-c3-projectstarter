@@ -230,15 +230,13 @@ jobs:
       - checkout
       - restore_cache:
           keys: [frontend-build]
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
             curl -sL https://rpm.nodesource.com/setup_13.x | bash -
             yum -y install nodejs
             yum -y install tar gzip
-            cd frontend && yarn install
+            cd frontend && npm install
       - run:
           name: Get backend url
           command: |
@@ -265,15 +263,13 @@ jobs:
 
   deploy-backend:
     docker:
-      - image: ubuntu:20
+      - image: ubuntu:20.04
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints: ["ca:ed:fe:e1:9d:6e:36:df:2b:0c:8f:59:05:f9:cc:17"]
       - restore_cache:
           keys: [backend-build]
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -308,7 +304,9 @@ jobs:
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-    
+      
+      - attach_workspace:
+          at: ~/
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
       - revert-migrations:
@@ -334,5 +332,5 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]

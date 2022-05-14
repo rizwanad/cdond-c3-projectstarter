@@ -325,16 +325,16 @@ jobs:
             apk update
             apk add aws-cli curl
       - run:
-          name: Get backend url
+          name: Backend smoke test
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:5}" \
               --output text)
             export API_URL="http://${BACKEND_IP}:3030"
-      - run:
-          name: Backend smoke test.
-          command: |
+
+            echo "[API URL] = ${API_URL}"
+
             if curl "${API_URL}/api/status" | grep "ok"
             then
                 return 0

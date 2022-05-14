@@ -217,10 +217,10 @@ jobs:
             else
               curl --insecure https://kvdb.io/6STZ5FHiFLWSx4qSBscg6N/migration_${CIRCLE_WORKFLOW_ID:0:5}  -d '0'
             fi
-      - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
-      - revert-migrations:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
+      # - destroy-environment:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
+      # - revert-migrations:
+      #     workflow_id: ${CIRCLE_WORKFLOW_ID:0:5}
 
   deploy-frontend:
     docker:

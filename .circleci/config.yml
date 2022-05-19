@@ -401,13 +401,16 @@ jobs:
             
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:5}"
+      - run:
+          name: Remove old stacks and files
+          command: |
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/6STZ5FHiFLWSx4qSBscg6N/old_workflow_id)
+            echo OldWorkflowID: "${OldWorkflowID}"
 
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
             echo Stack names: "${STACKS[@]}" 
-      - run:
-          name: Remove old stacks and files
-          command: |
+            
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
             then
               echo OldWorkflowID: "${OldWorkflowID}"

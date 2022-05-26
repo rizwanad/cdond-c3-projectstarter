@@ -1,4 +1,3 @@
-## Getting Started
 
 Instructions for how to get a copy of the project running on your local machine.
 
